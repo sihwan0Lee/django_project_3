@@ -5,8 +5,16 @@
 {{ request.user }}
 <input type="text" id="username">
 <input type="password" id="password">
-<button id="login-submit">전송</button>
+<button id="login">로그인</button>
 
+<div class="container">
+
+    <div class="form-group col-md-6">
+        <div class="row">
+            <a href="{% url 'register' %}" class="form-control btn btn-outline-danger">회원 등록</a>
+        </div>
+    </div>
+</div>
 
 
 
@@ -15,8 +23,9 @@
 
 <script>
     $(document).ready(function () {
-        $('#loginButton').click(function () {
-            $.post('/apis/users/login/', { 'username': $('#username').val(), 'password': $('#password').val() }, function () {
+        $('#login').click(function () {
+            $.post('/apis/users/login', { 'username': $('#username').val(), 'password': $('#password').val() }, function () {
+                alert('로그인을 환영합니다!');
                 window.location = '/';
             }).fail(function (data) {
                 alert(data.responseJSON.message);

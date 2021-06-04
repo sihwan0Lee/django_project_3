@@ -26,7 +26,7 @@ class UserCreateView(BaseView):
         username = request.POST.get('username', '')
         if not username:
             return self.response(message="아이디를 입력해주세요", status=400)
-        passwrod = request.POST.get('password', '')
+        password = request.POST.get('password', '')
         if not password:
             return self.response(message="패스워드를 입력해주세요", status=400)
         email = request.POST.get('email', '')
@@ -63,3 +63,14 @@ class UserLogoutView(BaseView):
     def get(self, request):
         logout(request)
         return self.response()
+
+
+@method_decorator(login_required, name='dispatch')
+class ContentCreateView(BaseView):
+
+    def post(self, request):
+        text = request.POST.get('text', '').strip()
+        content = Content.objects.create(user=request.user, text=text)
+        for idx, file in enumerate(request.FILES.values()):
+            Image.objects.create(content=content, image=file, order=idx)
+        return self.response({})
