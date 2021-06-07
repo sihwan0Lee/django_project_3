@@ -2,14 +2,28 @@
 
 {% block head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dropzone@5.5.1/dist/dropzone.min.css">
+
 {% endblock %}
 
 
 {% block body %}
-<h1>AKAZA</h1>
-{{ request.user }}
-<button id="login">로그인</button>
-<button id="logout">로그아웃</button>
+<nav class="fast-nav navbar navbar-expand-lg navbar-light bg-white">
+    <a class="navbar-brand text-warning col-sm-8" href="{% url 'home' %}">
+        <img src="/media/user-upload/1600007369751.png" width='30' height="30" class="d-inline-block align-top"
+            alt="">shgram</a>
+    <div class="collapse navbar-collapse col-sm-4" id="navbarText"
+        style="display: inline-block !important; text-align: left;">
+        <span class="navbar-text col-sm-3">
+            {{ request.user }}
+        </span>
+        <span class="navbar-text col-sm-3">
+            <a>친구목록</a>
+        </span>
+        <span class="navbar-text col-sm-3">
+            <a href="javascript:void(0);" id="logout">로그아웃</a>
+        </span>
+    </div>
+</nav>
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -40,7 +54,7 @@
         <div class="text-center user-block">
             <h5 class="text-info left-things">{{ content.user.username }}</h5>
             <img class="img-info img-circle img-bordered-sm" src="{{ image.image.url }}" alt="User Image">
-            {% endfor %}
+
             <div>
                 <span class="username left-things">
                     <a href="#" class="text-info">{{ content.user.username }}</a>
@@ -51,6 +65,7 @@
         </div>
     </div>
 </div>
+{% endfor %}
 {% endfor %}
 
 </div>
@@ -101,26 +116,11 @@
                 });
         */
 
-
-
-        $(document).ready(function () {
-            $('#login').click(function () {
-                $.post('/apis/users/login', { 'username': $('#username').val(), 'password': $('#password').val() }, function () {
-                    window.location = '/';
-                }).fail(function (data) {
-                    alert(data.responseJSON.message);
-                });
-            });
+        $('#logout').click(function () {
+            $.get('/apis/users/logout', {}, function () {
+                window.location = '/';
+            })
         });
-</script>
-
-<script>
-        $(document).ready(function () {
-            $('#logout').click(function () {
-                $.get('/apis/users/logout', {}, function () {
-                    window.location = '/';
-                })
-            });
-        });
+    });
 </script>
 {% endblock %}

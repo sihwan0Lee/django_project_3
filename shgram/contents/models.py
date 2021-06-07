@@ -18,13 +18,16 @@ class Content(BaseModel):
     text = models.TextField(default='')
 
     class Meta:
+        # 최신글 먼저나오게
         ordering = ['-created_at']
         verbose_name_plural = "컨텐츠"
 
 
 def image_upload_to(instance, filename):
     ext = filename.split('.')[-1]
+    print(uuid.uuid4(), ext)
     return os.path.join(instance.UPLOAD_PATH, "%s.%s" % (uuid.uuid4(), ext))
+
     # 16자리 고유한 아이디 생성
 
 

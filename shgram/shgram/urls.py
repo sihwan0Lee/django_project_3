@@ -30,6 +30,7 @@ class NonUserTemplateView(TemplateView):
         return super(NonUserTemplateView, self).dispatch(request, *args, **kwargs)
 
 
+# name에 설정 된부분이 html과 연결된다.
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('apis/', include('apis.urls')),

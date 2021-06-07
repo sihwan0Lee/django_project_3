@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from django.core.validators import validate_email, ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from contents.models import Content, Image, FollowRelation
 
 
 @method_decorator(csrf_exempt, name='dispatch')
