@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block body %}
+<nav class="fast-nav navbar navbar-expand-lg navbar-light bg-white">
+    <a class="navbar-brand text-warning col-sm-8" href="{% url 'home' %}">
+        <img src="/media/user-upload/1600007369751.png" width='30' height="30" class="d-inline-block align-top"
+            alt="">shgram</a>
+    <div class="collapse navbar-collapse col-sm-4" id="navbarText"
+        style="display: inline-block !important; text-align: left;">
+        <span class="navbar-text col-sm-3">
+            {{ request.user }}
+        </span>
+        <span class="navbar-text col-sm-3">
+            <a href="{% url 'relation' %}">친구목록</a>
+        </span>
+        <span class="navbar-text col-sm-3">
+            <a href="javascript:void(0);" id="logout">로그아웃</a>
+        </span>
+    </div>
+</nav>
+
+<br>
+
+{% endblock %}

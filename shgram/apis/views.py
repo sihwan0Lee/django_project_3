@@ -7,6 +7,8 @@ from django.db import IntegrityError
 from django.core.validators import validate_email, ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+
+
 from contents.models import Content, Image, FollowRelation
 
 
@@ -75,3 +77,66 @@ class ContentCreateView(BaseView):
         for idx, file in enumerate(request.FILES.values()):
             Image.objects.create(content=content, image=file, order=idx)
         return self.response({})
+
+
+@method_decorator(login_required, name='dispatch')
+class RelationCreateView(BaseView):
+
+    def post(self, request):
+        try:
+            user_id = request.POST.get('id', '')
+        except ValueError:
+            return self.response(message='잘못된 요청입니다', status=400)
+
+        try:
+            relation = FollowRelation.objects.get(follower=request.user)
+        except FollowRelation.DoesNotExist:
+            relation = FollowRelation.objects.create(follower=request.user)
+
+        try:
+            if user_id == request.user.id:
+                raise IntegrityError
+            relation.followee.add(user_id)
+            relation.save()
+        except IntegrityError:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        return self.response({})
+
+
+@method_decorator(login_required, name='dispatch')
+class RelationDeleteView(BaseView):
+
+    def post(self, request):
+        try:
+            user_id = request.POST.get('id', '')
+        except ValueError:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        try:
+            relation = FollowRelation.objects.get(follower=request.user)
+        except FollowRelation.DoesNotExist:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        try:
+            if user_id == request.user.id:
+                # 자기 자신은 언팔로우 안됨.
+                raise IntegrityError
+            relation.followee.remove(user_id)
+            relation.save()
+        except IntegrityError:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        return self.response({})
+
+
+class UserGetView(BaseView):
+
+    def get(self, request):
+        username = request.GET.get('username', '').strip()
+        user = User.objects.get(username=username)
+        try:
+            if user:
+                return self.response({'username': username, 'id': user.id})
+        except User.DoesNotExist:
+            return self.response(message='잘못된 요청입니다.', status=400)

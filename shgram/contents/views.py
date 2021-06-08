@@ -27,3 +27,30 @@ class HomeView(TemplateView):
         #    user = self.request.user
         # )
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+class RelationView(TemplateView):
+
+    template_name = 'relation.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RelationView, self).get_context_data(**kwargs)
+
+        user = self.request.user
+
+        # 내가 팔로우하는 사람들
+        try:
+            followers = FollowRelation.objects.get(
+                follower=user).followee.all()
+            context['followees'] = followers
+            context['followees_ids'] = list(
+                followers.values_list('id', flat=True))
+
+        except FollowRelation.DoesNotExist:
+            pass
+
+        context['followers'] = FollowRelation.objects.select_related(
+            'follower').filter(followee__in=[user])
+
+        return context
